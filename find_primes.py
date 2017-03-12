@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-
-import optparse, sys, os, subprocess, re, csv
+import sys, os, subprocess, re, csv
 
 with open('alexa_top1mil', 'r') as csvfile:
 	reader = csv.reader(csvfile, delimiter=',')

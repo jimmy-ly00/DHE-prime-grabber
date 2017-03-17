@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 import sys, os, subprocess, re, csv
+outfile = open('output.csv', 'w')
+wr = csv.writer(outfile)
 
 with open('alexa_top1mil', 'r') as csvfile:
 	reader = csv.reader(csvfile, delimiter=',')
@@ -16,8 +18,8 @@ with open('alexa_top1mil', 'r') as csvfile:
 			for line in cmd.decode("utf-8").splitlines():
 				if 'dh_p' in line:
 					prime = int(re.sub(".*: ", "", line), 16)
-					print('{}, {}'.format(server, prime))
-
+					#a = ('{}, {}'.format(server, prime))
+					wr.writerow([server, prime])
 		except subprocess.CalledProcessError:
 			#print('{}, {}'.format(server, "No DHE"))
 			pass

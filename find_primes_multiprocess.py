@@ -28,7 +28,7 @@ def process_line(line):
 		pass
 
 if __name__ == "__main__":
-    pool = Pool()
+    pool = Pool(os.cpu_count())
     with open('alexa_top1mil') as f:
         results = pool.map(process_line, f,)
 

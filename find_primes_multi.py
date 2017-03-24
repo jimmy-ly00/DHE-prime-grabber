@@ -30,7 +30,7 @@ def process_line(line):
 if __name__ == "__main__":
     workers = 50
     pool = Pool(workers)
-    with open('test') as f:
+    with open('alex_top1mil') as f:
         result = pool.map(process_line, f,workers)
     for item in result:
         wr.writerow([item])

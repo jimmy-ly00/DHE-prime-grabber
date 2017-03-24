@@ -1,36 +1,58 @@
-import multiprocessing as mp,os
+#!/usr/bin/python3
+import sys, os, subprocess, re, time, itertools, csv
+from multiprocessing import Process, Manager, Pool
 
-def process_wrapper(chunkStart, chunkSize):
-    with open("input.txt") as f:
-        f.seek(chunkStart)
-        lines = f.read(chunkSize).splitlines()
-        for line in lines:
-            process(line)
+outfile = open('output.csv', 'w')
+wr = csv.writer(outfile)
 
-def chunkify(fname,size=1024*1024):
-    fileEnd = os.path.getsize(fname)
-    with open(fname,'r') as f:
-        chunkEnd = f.tell()
+def worker(in_queue, out_list):
     while True:
-        chunkStart = chunkEnd
-        f.seek(size,1)
-        f.readline()
-        chunkEnd = f.tell()
-        yield chunkStart, chunkEnd - chunkStart
-        if chunkEnd > fileEnd:
-            break
+        line = in_queue.get()
+        row = line[1].split(',')
+        server = row[0]
+        servername=row[1].strip('\n')
+        try:
+            cmd = subprocess.check_output([os.path.dirname(sys.argv[0])+"/openssl-trace",
+                "s_client", "-trace",
+                "-cipher", "DHE",
+                "-connect", server+":443"],
+                stdin=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=1)
+            for line in cmd.decode("ISO-8859-1").splitlines():
+                if 'dh_p' in line:
+                    prime = int(re.sub(".*: ", "", line), 16)
+                    #out_list.append([server, servername, prime])
+                out_list.append('{}, {}, {}'.format(server, servername, prime))
+        except subprocess.CalledProcessError:
+            out_list.append('{} {} {}'.format(server, servername, "No_DHE"))
+        except subprocess.TimeoutExpired:
+            out_list.append('{} {} {}'.format(server, servername, "Can't_connect"))
+        except:
+            out_list.append('{} {} [}'.format(server, servername, "Error"))
 
-#init objects
-pool = mp.Pool(cores)
-jobs = []
+        # fake work
+        time.sleep(.5)
 
-#create jobs
-for chunkStart,chunkSize in chunkify("input.txt"):
-    jobs.append( pool.apply_async(process_wrapper,(chunkStart,chunkSize)) )
+if __name__ == "__main__":
+    num_workers = 200
 
-#wait for all jobs to finish
-for job in jobs:
-    job.get()
+    manager = Manager()
+    results = manager.list()
+    work = manager.Queue(num_workers)
+	
+    # start for workers    
+    pool = []
+    for i in range(num_workers):
+        p = Process(target=worker, args=(work, results))
+        p.start()
+        pool.append(p)
+		
+    # produce data
+    with open("alexa_top1mil") as f:
+        iters = itertools.chain(f, (None,)*num_workers)
+        for line in enumerate(iters):
+            work.put(line)
 
-#clean up
-pool.close()
+    for p in pool:
+        p.join()
+	
+    pool.close()

@@ -19,11 +19,11 @@ with open('alexa_top1mil', 'r') as csvfile:
             for line in cmd.decode("ISO-8859-1").splitlines():
                 if 'dh_p' in line:
                     prime = int(re.sub(".*: ", "", line), 16)
-                    #print('{}, {}'.format(server, prime))
+                    #print('{} {}'.format(server, prime))
                     wr.writerow([server, servername, prime])
         except subprocess.CalledProcessError:
-            #print('{}, {}'.format(server, "No DHE"))
+            #print('{} {}'.format(server, "No DHE"))
             pass
         except subprocess.TimeoutExpired:
-            #print('{}, {}'.format(server, "Can't connect"))
+            #print('{} {}'.format(server, "Can't connect"))
             pass

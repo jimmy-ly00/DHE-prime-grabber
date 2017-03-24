@@ -25,7 +25,7 @@ def process_line(line):
     except subprocess.TimeoutExpired:
         return ('{} {} {}'.format(server, servername, "Can't_connect"))
     except:
-        return ('{} {} [}'.format(server, servername, "Error"))
+        return ('{} {} {}'.format(server, servername, "Error"))
     
 if __name__ == "__main__":
     workers = 50

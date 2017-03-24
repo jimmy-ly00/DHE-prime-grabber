@@ -27,13 +27,13 @@ def worker(in_queue, out_list):
         except subprocess.TimeoutExpired:
             out_list.append('{} {} {}'.format(server, servername, "Can't_connect"))
         except:
-            out_list.append('{} {} [}'.format(server, servername, "Error"))
+            out_list.append('{} {} {}'.format(server, servername, "Error"))
 
         # fake work
         time.sleep(.5)
 
 if __name__ == "__main__":
-    num_workers = 200
+    num_workers = 100
 
     manager = Manager()
     results = manager.list()
@@ -55,4 +55,5 @@ if __name__ == "__main__":
     for p in pool:
         p.join()
 	
-    pool.close()
+    print(results)
+    #pool.close()

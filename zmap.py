@@ -10,7 +10,7 @@ wr = csv.writer(outfile)
 
 def process_line(line):
     row = line.split(',')	
-    server = row[0]
+    server = row[0].strip('\n')
     try:
         cmd = subprocess.check_output([os.path.dirname(sys.argv[0])+"/openssl-trace",
             "s_client", "-trace",

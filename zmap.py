@@ -2,7 +2,7 @@
 import sys, os, subprocess, re, csv
 from multiprocessing import Pool
 
-FILE = "alexa_top1mil"
+FILE = "zmap_results"
 WORKERS = 80
 
 outfile = open('output.csv', 'w')
@@ -11,7 +11,6 @@ wr = csv.writer(outfile)
 def process_line(line):
     row = line.split(',')	
     server = row[0]
-    servername=row[1].strip('\n')
     try:
         cmd = subprocess.check_output([os.path.dirname(sys.argv[0])+"/openssl-trace",
             "s_client", "-trace",
@@ -21,14 +20,14 @@ def process_line(line):
         for line in cmd.decode("ISO-8859-1").splitlines():
             if 'dh_p' in line:
                 prime = int(re.sub(".*: ", "", line), 16)
-                return '{} {} {}'.format(server, servername, prime)
+                return '{} {}'.format(server, prime)
      
     except subprocess.CalledProcessError:
-        return ('{} {} {}'.format(server, servername, "No_DHE"))
+        return ('{} {}'.format(server, "No_DHE"))
     except subprocess.TimeoutExpired:
-        return ('{} {} {}'.format(server, servername, "Can't_connect"))
+        return ('{} {}'.format(server, "Can't_connect"))
     except:
-        return ('{} {} {}'.format(server, servername, "Error"))
+        return ('{} {}'.format(server, "Error"))
     
 if __name__ == "__main__":
     pool = Pool(WORKERS)

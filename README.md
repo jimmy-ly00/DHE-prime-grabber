@@ -32,6 +32,7 @@ cmd = subprocess.check_output("openssl-trace.exe",
                 stdin=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=3) 
 ```
 
+To run, open cmd and cd into the working directory and execute:
 ```python
 python ./find_primes_multi.py
 ```

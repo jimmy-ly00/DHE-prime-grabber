@@ -32,6 +32,6 @@ def process_line(line):
 if __name__ == "__main__":
     pool = Pool(WORKERS)
     with open(FILE) as f:
-        result = pool.map(process_line, f, WORKERS)
+        result = pool.map(process_line, f)
     for item in result:
         wr.writerow([item])

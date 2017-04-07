@@ -1,8 +1,14 @@
 # DHE-prime-grabber
-Grabs Diffie-Hellman primes from certificates using OpenSSL
+Grabs Diffie-Hellman primes from certificates using OpenSSL. 
+
+Censys raw data were used from here: https://censys.io/data
+
+Primes from Alexa Top 1mil and IPv4 with cipher suits DHE can be found from here: https://drive.google.com/open?id=0B9QfvGuHrkSWVng0REhyUUFqQ2s
 
 ### Example
-Uses re-compiled OpenSSL with trace option on to view the Diffie-Hellman handshake protocol. Make sure openssl-trace and alexa_top1mil are in the same folder. Includes multiprocessing to make use of all cores and increase speed performance. Outputs a csv file instead of stdout for I/O bound reasons.
+Uses re-compiled OpenSSL with trace option on to view the Diffie-Hellman handshake protocol. Make sure openssl-trace and alexa_top1mil are in the same folder. Includes multiprocessing to make use of all cores and increase speed performance. Outputs a csv file instead of stdout for I/O bound reasons. You can manually update the workers if you are not bounded by the network bandwidth!
+
+Tip: You can run the script as a background process by ```nohup ./find_primes_multi.py & ```
 
 ### Linux
 ```python

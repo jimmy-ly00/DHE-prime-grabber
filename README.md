@@ -10,6 +10,8 @@ Uses re-compiled OpenSSL with trace option on to view the Diffie-Hellman handsha
 
 Tip: You can run the script as a background process by ```nohup ./find_primes_multi.py & ```
 
+**Warning**: IPv4 contains 50 million rows and could take up to 60 hours to run from a home network. As of 2017, it downloads 50GB and uploads 35GB worth of certificates and exchanges.
+
 ### Linux
 ```python
 ./find_primes_multi.py
